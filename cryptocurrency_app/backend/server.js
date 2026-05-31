@@ -11,6 +11,8 @@ const { initCryptoSocket } = require('./sockets/cryptoSocket');
 const { startCryptoPolling } = require('./services/cryptoDataService');
 
 const app = express();
+app.set('trust proxy', 1); // Render va boshqa proxy serverlar orqali to'g'ri IP olish uchun
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -27,7 +29,7 @@ app.use(morgan('combined')); // Xavfsizlik loglarini yuritish
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 daqiqa
   max: 100, // har bir IP uchun 15 daqiqa ichida maksimal 100 ta so'rov
-  message: 'Ushbu IP manzildan juda ko\'p so\'rov yuborildi, iltimos 15 daqiqadan so\'ng qayta urinib ko\'ring',
+  message: 'Ushbu IP manzildan juda ko\'m so\'rov yuborildi, iltimos 15 daqiqadan so\'ng qayta urinib ko\'ring',
 });
 app.use('/api', limiter); // Barcha API marshrutlariga qo'llash
 
