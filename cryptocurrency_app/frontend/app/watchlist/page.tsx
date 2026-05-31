@@ -23,7 +23,7 @@ export default function Watchlist() {
       setLoadingWatchlist(true);
 
       try {
-        const res = await fetch('http://localhost:5000/api/auth/watchlist', {
+        const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/watchlist', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -45,7 +45,7 @@ export default function Watchlist() {
     setRemovingCoinId(coinId);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/watchlist/${coinId}`, {
+      const res = await fetch(`https://crypto-app-6ns2.onrender.com/api/auth/watchlist/${coinId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

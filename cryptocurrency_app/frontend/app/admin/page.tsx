@@ -40,7 +40,7 @@ export default function AdminPanel() {
       setError('');
 
       try {
-        const res = await fetch('http://localhost:5000/api/admin/users', {
+        const res = await fetch('https://crypto-app-6ns2.onrender.com/api/admin/users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +79,7 @@ export default function AdminPanel() {
     setError('');
 
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/users/${targetUser._id}/role`, {
+      const res = await fetch(`https://crypto-app-6ns2.onrender.com/api/admin/users/${targetUser._id}/role`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ export default function AdminPanel() {
                         value={item.role}
                         disabled={updatingUserId === item._id}
                         onChange={(event) => handleRoleChange(item, event.target.value as UserRole)}
-                        className="rounded-xl border border-border bg-panel px-3 py-2 text-sm font-medium text-text outline-none transition-colors focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
+                        className="rounded-xl border border-border bg-panel px-3 py-2 text-sm font-medium text-text outline-none transition-colors focus:border-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="user">user</option>
                         <option value="admin">admin</option>

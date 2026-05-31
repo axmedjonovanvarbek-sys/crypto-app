@@ -35,7 +35,7 @@ export default function Portfolio() {
       setLoadingPortfolio(true);
 
       try {
-        const res = await fetch('http://localhost:5000/api/auth/portfolio', {
+        const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/portfolio', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -101,7 +101,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/portfolio', {
+      const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/portfolio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/portfolio/${coinId}`, {
+      const res = await fetch(`https://crypto-app-6ns2.onrender.com/api/auth/portfolio/${coinId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -250,7 +250,7 @@ export default function Portfolio() {
           <button
             type="submit"
             disabled={saving}
-            className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Plus className="mr-2 h-4 w-4" />
             {saving ? (isUz ? 'Saqlanmoqda...' : 'Saving...') : (isUz ? 'Saqlash' : 'Save')}
@@ -327,7 +327,7 @@ export default function Portfolio() {
                           type="button"
                           onClick={() => removeHolding(holding.coinId)}
                           disabled={removingCoinId === holding.coinId}
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-danger/20 bg-danger/10 text-danger transition-colors hover:bg-danger/20 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-danger/20 bg-danger/10 text-danger transition-colors hover:bg-danger/20 disabled:cursor-not-allowed disabled:opacity-50"
                           title={isUz ? 'O\'chirish' : 'Remove'}
                         >
                           <Trash2 className="h-5 w-5" />
