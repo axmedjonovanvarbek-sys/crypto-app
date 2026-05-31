@@ -35,7 +35,7 @@ export default function Portfolio() {
       setLoadingPortfolio(true);
 
       try {
-        const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/portfolio', {
+        const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/portfolio', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -101,7 +101,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/portfolio', {
+      const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/portfolio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch(`https://crypto-app-6ns2.onrender.com/api/auth/portfolio/${coinId}`, {
+      const res = await fetch(`https://crypto-app-d4s5.onrender.com/api/auth/portfolio/${coinId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -40,7 +40,7 @@ export default function AdminPanel() {
       setError('');
 
       try {
-        const res = await fetch('https://crypto-app-6ns2.onrender.com/api/admin/users', {
+        const res = await fetch('https://crypto-app-d4s5.onrender.com/api/admin/users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +79,7 @@ export default function AdminPanel() {
     setError('');
 
     try {
-      const res = await fetch(`https://crypto-app-6ns2.onrender.com/api/admin/users/${targetUser._id}/role`, {
+      const res = await fetch(`https://crypto-app-d4s5.onrender.com/api/admin/users/${targetUser._id}/role`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

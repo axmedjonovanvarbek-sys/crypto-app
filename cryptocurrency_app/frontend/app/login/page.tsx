@@ -23,7 +23,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch('https://crypto-app-6ns2.onrender.com/api/auth/login', {
+      const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

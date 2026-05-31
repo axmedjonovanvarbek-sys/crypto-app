@@ -18,7 +18,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // In production this would be an env var
-    const newSocket = io('https://crypto-app-6ns2.onrender.com');
+    const newSocket = io('https://crypto-app-d4s5.onrender.com');
     setSocket(newSocket);
 
     newSocket.on('cryptoUpdate', (data: any[]) => {
