@@ -33,12 +33,21 @@ const fetchCoinGecko = async () => {
 const fetchCoinCap = async () => {
   try {
     const ids = COINS.map(c => c.id).join(',');
-    const res = await axios.get(`https://api.coincap.io/v2/assets?ids=${ids}`);
-    const data = {};
-    res.data.data.forEach(coin => {
-      data[coin.id] = parseFloat(coin.priceUsd);
-    });
-    return data;
+    let coinCapData = null;
+    
+    try {
+      const res = await axios.get(`https://api.coincap.io/v2/assets?ids=${ids}`);
+      const data = {};
+      res.data.data.forEach(coin => {
+        data[coin.id] = parseFloat(coin.priceUsd);
+      });
+      coinCapData = data;
+    } catch (error) {
+      console.log("CoinCap vaqtincha ishlamayapti, lekin muammo yo'q!");
+      coinCapData = {}; // Xato bo'lsa bo'sh object qaytarib yuboraveramiz
+    }
+    
+    return coinCapData;
   } catch (error) {
     console.error('CoinCap fetch error:', error.message);
     return null;
@@ -184,4 +193,3 @@ module.exports = {
   getCoinHistory,
   startCryptoPolling
 };
-
