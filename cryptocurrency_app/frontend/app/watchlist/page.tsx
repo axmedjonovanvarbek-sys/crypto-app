@@ -23,7 +23,7 @@ export default function Watchlist() {
       setLoadingWatchlist(true);
 
       try {
-        const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/watchlist', {
+        const res = await fetch('https://crypto-app-mn9g.onrender.com/api/auth/watchlist', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -45,7 +45,7 @@ export default function Watchlist() {
     setRemovingCoinId(coinId);
 
     try {
-      const res = await fetch(`https://crypto-app-d4s5.onrender.com/api/auth/watchlist/${coinId}`, {
+      const res = await fetch(`https://crypto-app-mn9g.onrender.com/api/auth/watchlist/${coinId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -89,54 +89,54 @@ export default function Watchlist() {
               key={coin.id} 
               className="glass-panel p-6 flex flex-col justify-between hover:border-primary/30 transition-colors group cursor-pointer"
             >
-              <Link href={`/coin/${coin.id}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center space-x-3">
-                    <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" />
-                    <div>
-                      <h3 className="font-bold text-text">{coin.symbol.toUpperCase()}</h3>
-                      <p className="text-sm text-muted">{coin.name}</p>
-                    </div>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <img src={coin.image} alt={coin.name} className="w-12 h-12 rounded-full" />
+                  <div>
+                    <h3 className="font-semibold text-text">{coin.name}</h3>
+                    <p className="text-sm text-muted">{coin.symbol.toUpperCase()}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      removeFromWatchlist(coin.id);
-                    }}
-                    disabled={removingCoinId === coin.id}
-                    className="rounded-xl border border-danger/20 bg-danger/10 p-2 text-danger transition-colors hover:bg-danger/20 disabled:cursor-not-allowed disabled:opacity-60"
-                    title="Remove"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
                 </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-text group-hover:text-primary transition-colors">
-                    ${coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
-                  </h2>
-                  <p className={`text-sm font-medium mt-2 flex items-center ${isPositive ? 'text-success' : 'text-danger'}`}>
-                    {isPositive ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
-                    {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
-                  </p>
+                <button
+                  onClick={() => removeFromWatchlist(coin.id)}
+                  disabled={removingCoinId === coin.id}
+                  className="p-2 hover:bg-danger/10 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-5 h-5 text-danger" />
+                </button>
+              </div>
+
+              <Link href={`/coin/${coin.id}`}>
+                <div className="mb-4">
+                  <p className="text-2xl font-bold text-text mb-2">${coin.current_price.toLocaleString('en-US', { maximumFractionDigits: 2 })}</p>
+                  <div className={`flex items-center gap-2 text-sm font-medium ${ isPositive ? 'text-success' : 'text-danger'}`}>
+                    {isPositive ? (
+                      <ArrowUpRight className="w-4 h-4" />
+                    ) : (
+                      <ArrowDownRight className="w-4 h-4" />
+                    )}
+                    {Math.abs(coin.price_change_percentage_24h).toFixed(2)}% {t('common', 'in24h')}
+                  </div>
                 </div>
               </Link>
+
+              {coin.market_cap && (
+                <div className="text-xs text-muted">
+                  {t('common', 'marketCap')}: ${(coin.market_cap / 1e9).toFixed(2)}B
+                </div>
+              )}
             </motion.div>
           );
         })}
       </div>
-      
+
       {watchlistData.length === 0 && (
-         <div className="glass-panel p-12 text-center rounded-2xl">
-           <Star className="w-16 h-16 text-muted mx-auto mb-4" />
-           <h2 className="text-xl font-bold text-text">{t('watchlist', 'empty')}</h2>
-           <p className="text-muted mt-2">{t('watchlist', 'emptySub')}</p>
-           <Link href="/explore">
-             <button className="mt-6 px-6 py-3 bg-primary hover:bg-blue-600 text-white font-medium rounded-xl transition-colors">
-               {t('watchlist', 'exploreBtn')}
-             </button>
-           </Link>
-         </div>
+        <div className="glass-panel p-12 text-center border border-border/50">
+          <p className="text-muted mb-4">{t('watchlist', 'empty')}</p>
+          <Link href="/explore" className="text-primary hover:underline font-medium">
+            {t('watchlist', 'addCoins')}
+          </Link>
+        </div>
       )}
     </div>
   );

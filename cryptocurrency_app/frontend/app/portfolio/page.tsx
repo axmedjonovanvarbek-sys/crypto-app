@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
 import { useSocket } from '@/contexts/SocketContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Briefcase, TrendingUp, TrendingDown, DollarSign, Plus, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState, useMemo } from 'react';
+import { TrendingUp, TrendingDown, Plus, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface PortfolioHolding {
@@ -35,7 +36,7 @@ export default function Portfolio() {
       setLoadingPortfolio(true);
 
       try {
-        const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/portfolio', {
+        const res = await fetch('https://crypto-app-mn9g.onrender.com/api/auth/portfolio', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -101,7 +102,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/portfolio', {
+      const res = await fetch('https://crypto-app-mn9g.onrender.com/api/auth/portfolio', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +136,7 @@ export default function Portfolio() {
     setError('');
 
     try {
-      const res = await fetch(`https://crypto-app-d4s5.onrender.com/api/auth/portfolio/${coinId}`, {
+      const res = await fetch(`https://crypto-app-mn9g.onrender.com/api/auth/portfolio/${coinId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -164,182 +165,150 @@ export default function Portfolio() {
   return (
     <div className="space-y-8 pb-12">
       <div>
-        <h1 className="mb-2 flex items-center text-3xl font-bold text-text">
-          <Briefcase className="mr-3 h-8 w-8 text-secondary" /> {t('portfolio', 'title')}
-        </h1>
+        <h1 className="text-3xl font-bold mb-2 text-text">{t('portfolio', 'title')}</h1>
         <p className="text-muted">{t('portfolio', 'subtitle')}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+      {holdingsWithCurrentData.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-panel relative overflow-hidden p-8 xl:col-span-2"
+          className="glass-panel p-6 border border-border/50"
         >
-          <div className="absolute right-0 top-0 p-8 opacity-10">
-            <DollarSign className="h-32 w-32 text-primary" />
-          </div>
-          <p className="mb-2 font-medium text-muted">{t('portfolio', 'totalBalance')}</p>
-          <h2 className="mb-4 text-5xl font-bold text-text">
-            ${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </h2>
-          <div className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold ${isTotalProfitPositive ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'}`}>
-            {isTotalProfitPositive ? <TrendingUp className="mr-2 h-4 w-4" /> : <TrendingDown className="mr-2 h-4 w-4" />}
-            {isTotalProfitPositive ? '+' : ''}${totalProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <p className="text-sm text-muted mb-1">{isUz ? 'Jami balans' : 'Total Balance'}</p>
+              <p className="text-2xl font-bold text-text">${totalBalance.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted mb-1">{isUz ? 'Jami foyda' : 'Total Profit'}</p>
+              <div className="flex items-center gap-2">
+                <p className={`text-2xl font-bold ${ isTotalProfitPositive ? 'text-success' : 'text-danger'}`}>
+                  ${Math.abs(totalProfit).toFixed(2)}
+                </p>
+                {isTotalProfitPositive ? (
+                  <TrendingUp className="w-5 h-5 text-success" />
+                ) : (
+                  <TrendingDown className="w-5 h-5 text-danger" />
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-muted mb-1">{isUz ? 'Aktivlar' : 'Assets'}</p>
+              <p className="text-2xl font-bold text-text">{holdingsWithCurrentData.length}</p>
+            </div>
           </div>
         </motion.div>
+      )}
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          onSubmit={saveHolding}
-          className="glass-panel space-y-4 p-6"
-        >
-          <h2 className="flex items-center text-lg font-bold text-text">
-            <Plus className="mr-2 h-5 w-5 text-primary" />
-            {isUz ? 'Aktiv qo\'shish' : 'Add Holding'}
-          </h2>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-muted">{isUz ? 'Token' : 'Token'}</label>
-            <select
-              value={selectedCoinId}
-              onChange={(event) => setSelectedCoinId(event.target.value)}
-              className="w-full rounded-xl border border-border bg-panel px-3 py-3 text-sm text-text outline-none focus:border-primary"
-            >
-              {cryptoData.map((coin) => (
-                <option key={coin.id} value={coin.id}>
-                  {coin.name} ({coin.symbol.toUpperCase()})
-                </option>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <h2 className="text-xl font-bold mb-4 text-text">{isUz ? 'Sizning aktivlar' : 'Your Holdings'}</h2>
+          {holdingsWithCurrentData.length === 0 ? (
+            <div className="glass-panel p-8 text-center border border-border/50">
+              <p className="text-muted mb-4">{isUz ? 'Hozircha aktivlar yoq' : 'No holdings yet'}</p>
+              <Link href="/explore" className="text-primary hover:underline">
+                {isUz ? 'Kriptovalyutalarni qo\'shish' : 'Add cryptocurrencies'}
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {holdingsWithCurrentData.map((holding: any) => (
+                <motion.div
+                  key={holding.coinId}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="glass-panel p-4 border border-border/50 hover:border-primary/30 transition-colors flex justify-between items-center"
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                    <img src={holding.coin.image} alt={holding.coin.name} className="w-10 h-10 rounded-full" />
+                    <div>
+                      <p className="font-semibold text-text">{holding.coin.name}</p>
+                      <p className="text-sm text-muted">{holding.amount.toFixed(4)} {holding.coin.symbol.toUpperCase()}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-text">${holding.currentValue.toFixed(2)}</p>
+                    {holding.hasBuyPrice && (
+                      <p className={`text-sm ${holding.profitPercentage >= 0 ? 'text-success' : 'text-danger'}`}>
+                        {holding.profitPercentage >= 0 ? '+' : ''}{holding.profitPercentage.toFixed(2)}%
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeHolding(holding.coinId)}
+                    disabled={removingCoinId === holding.coinId}
+                    className="ml-4 p-2 hover:bg-danger/10 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 className="w-5 h-5 text-danger" />
+                  </button>
+                </motion.div>
               ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-muted">{isUz ? 'Miqdor' : 'Amount'}</label>
-            <input
-              type="number"
-              min="0"
-              step="any"
-              required
-              value={amount}
-              onChange={(event) => setAmount(event.target.value)}
-              className="w-full rounded-xl border border-border bg-panel px-3 py-3 text-sm text-text outline-none focus:border-primary"
-              placeholder="0.5"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-muted">
-              {isUz ? 'Sotib olingan narx (ixtiyoriy)' : 'Buy price (optional)'}
-            </label>
-            <input
-              type="number"
-              min="0"
-              step="any"
-              value={buyPrice}
-              onChange={(event) => setBuyPrice(event.target.value)}
-              className="w-full rounded-xl border border-border bg-panel px-3 py-3 text-sm text-text outline-none focus:border-primary"
-              placeholder="50000"
-            />
-          </div>
-
-          {error && <p className="text-sm font-medium text-danger">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {saving ? (isUz ? 'Saqlanmoqda...' : 'Saving...') : (isUz ? 'Saqlash' : 'Save')}
-          </button>
-        </motion.form>
-      </div>
-
-      <div className="glass-panel mt-8 overflow-hidden rounded-2xl">
-        <div className="border-b border-border p-6">
-          <h2 className="text-xl font-bold text-text">{t('portfolio', 'yourAssets')}</h2>
+            </div>
+          )}
         </div>
 
-        {holdingsWithCurrentData.length === 0 ? (
-          <div className="p-12 text-center">
-            <Briefcase className="mx-auto mb-4 h-16 w-16 text-muted" />
-            <h2 className="text-xl font-bold text-text">
-              {isUz ? 'Portfelingiz hali bo\'sh' : 'Your portfolio is empty'}
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-muted">
-              {isUz
-                ? 'Boshlash uchun yuqoridagi forma orqali token va miqdorni kiriting.'
-                : 'Use the form above to add a token and the amount you own.'}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-border bg-panel">
-                  <th className="p-4 font-medium text-muted">{t('portfolio', 'asset')}</th>
-                  <th className="p-4 font-medium text-muted">{t('portfolio', 'balance')}</th>
-                  <th className="p-4 font-medium text-muted">{t('portfolio', 'price')}</th>
-                  <th className="p-4 text-right font-medium text-muted">{t('portfolio', 'profitLoss')}</th>
-                  <th className="p-4 text-center font-medium text-muted">{isUz ? 'Amal' : 'Action'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {holdingsWithCurrentData.map((holding: any) => {
-                  const isPositive = holding.profit >= 0;
-                  return (
-                    <tr key={holding.coinId} className="border-b border-border transition-colors hover:bg-panelHover">
-                      <td className="p-4">
-                        <div className="flex items-center space-x-3">
-                          <img src={holding.coin.image} alt={holding.coin.name} className="h-8 w-8 rounded-full" />
-                          <div>
-                            <p className="font-bold text-text">{holding.coin.name}</p>
-                            <p className="text-xs uppercase text-muted">{holding.coin.symbol}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4 text-text">
-                        <p className="font-bold">${holding.currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                        <p className="text-sm text-muted">{holding.amount} {holding.coin.symbol.toUpperCase()}</p>
-                      </td>
-                      <td className="p-4 font-medium text-text">
-                        ${holding.coin.current_price.toLocaleString()}
-                      </td>
-                      <td className="p-4 text-right">
-                        {holding.hasBuyPrice ? (
-                          <>
-                            <p className={`font-bold ${isPositive ? 'text-success' : 'text-danger'}`}>
-                              {isPositive ? '+' : ''}${holding.profit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </p>
-                            <p className={`text-sm ${isPositive ? 'text-success' : 'text-danger'}`}>
-                              {isPositive ? '+' : ''}{holding.profitPercentage.toFixed(2)}%
-                            </p>
-                          </>
-                        ) : (
-                          <p className="text-sm text-muted">-</p>
-                        )}
-                      </td>
-                      <td className="p-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => removeHolding(holding.coinId)}
-                          disabled={removingCoinId === holding.coinId}
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-danger/20 bg-danger/10 text-danger transition-colors hover:bg-danger/20 disabled:cursor-not-allowed disabled:opacity-50"
-                          title={isUz ? 'O\'chirish' : 'Remove'}
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <div>
+          <h2 className="text-xl font-bold mb-4 text-text flex items-center">
+            <Plus className="w-5 h-5 mr-2" /> {isUz ? 'Aktiv qo\'shish' : 'Add Holding'}
+          </h2>
+          <form onSubmit={saveHolding} className="glass-panel p-6 border border-border/50 space-y-4">
+            {error && (
+              <div className="bg-danger/10 border border-danger/30 text-danger px-3 py-2 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-muted mb-2">{isUz ? 'Kriptovalyuta' : 'Cryptocurrency'}</label>
+              <select
+                value={selectedCoinId}
+                onChange={(e) => setSelectedCoinId(e.target.value)}
+                className="w-full px-3 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary text-text"
+              >
+                {cryptoData.map((coin) => (
+                  <option key={coin.id} value={coin.id}>
+                    {coin.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-muted mb-2">{isUz ? 'Miqdor' : 'Amount'}</label>
+              <input
+                type="number"
+                step="0.00000001"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.5"
+                className="w-full px-3 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary text-text placeholder-muted"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-muted mb-2">{isUz ? 'Sotib olingan narxi (ixtiyoriy)' : 'Buy Price (optional)'}</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={buyPrice}
+                onChange={(e) => setBuyPrice(e.target.value)}
+                placeholder="0.00"
+                className="w-full px-3 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary text-text placeholder-muted"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={saving || !amount}
+              className="w-full px-4 py-2 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-all"
+            >
+              {saving ? (isUz ? 'Saqlanyapti...' : 'Saving...') : (isUz ? 'Saqlash' : 'Save')}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

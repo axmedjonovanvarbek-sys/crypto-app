@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AlertCircle, ShieldCheck, Users, UserCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useMemo } from 'react';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -40,7 +38,7 @@ export default function AdminPanel() {
       setError('');
 
       try {
-        const res = await fetch('https://crypto-app-d4s5.onrender.com/api/admin/users', {
+        const res = await fetch('https://crypto-app-mn9g.onrender.com/api/admin/users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +77,7 @@ export default function AdminPanel() {
     setError('');
 
     try {
-      const res = await fetch(`https://crypto-app-d4s5.onrender.com/api/admin/users/${targetUser._id}/role`, {
+      const res = await fetch(`https://crypto-app-mn9g.onrender.com/api/admin/users/${targetUser._id}/role`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -119,108 +117,77 @@ export default function AdminPanel() {
   return (
     <div className="space-y-8 pb-12">
       <div>
-        <h1 className="mb-2 flex items-center text-3xl font-bold text-text">
-          <ShieldCheck className="mr-3 h-8 w-8 text-primary" />
-          {isUz ? 'Admin panel' : 'Admin Panel'}
-        </h1>
-        <p className="text-muted">
-          {isUz
-            ? 'Ro\'yxatdan o\'tgan foydalanuvchilar va ularning rollarini boshqaring.'
-            : 'Manage registered users and their roles.'}
-        </p>
+        <h1 className="text-3xl font-bold text-text">{isUz ? 'Admin Paneli' : 'Admin Panel'}</h1>
+        <p className="text-muted mt-2">{isUz ? 'Foydalanuvchilari boshqarish' : 'Manage users and roles'}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="glass-panel p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="font-medium text-muted">{isUz ? 'Jami foydalanuvchilar' : 'Total Users'}</p>
-            <Users className="h-5 w-5 text-primary" />
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-panel p-6 border border-border/50">
+          <p className="text-sm text-muted mb-2">{isUz ? 'Jami foydalanuvchilar' : 'Total Users'}</p>
           <p className="text-3xl font-bold text-text">{stats.total}</p>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-panel p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="font-medium text-muted">Admin</p>
-            <ShieldCheck className="h-5 w-5 text-secondary" />
-          </div>
-          <p className="text-3xl font-bold text-text">{stats.admins}</p>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-panel p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="font-medium text-muted">User</p>
-            <UserCheck className="h-5 w-5 text-success" />
-          </div>
-          <p className="text-3xl font-bold text-text">{stats.users}</p>
-        </motion.div>
+        </div>
+        <div className="glass-panel p-6 border border-border/50">
+          <p className="text-sm text-muted mb-2">{isUz ? 'Adminlar' : 'Admins'}</p>
+          <p className="text-3xl font-bold text-primary">{stats.admins}</p>
+        </div>
+        <div className="glass-panel p-6 border border-border/50">
+          <p className="text-sm text-muted mb-2">{isUz ? 'Oddiy foydalanuvchilar' : 'Regular Users'}</p>
+          <p className="text-3xl font-bold text-blue-400">{stats.users}</p>
+        </div>
       </div>
 
       {error && (
-        <div className="flex items-center rounded-2xl border border-danger/30 bg-danger/10 px-4 py-3 text-danger">
-          <AlertCircle className="mr-2 h-5 w-5 flex-shrink-0" />
-          <span className="text-sm font-medium">{error}</span>
+        <div className="bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-lg">
+          {error}
         </div>
       )}
 
-      <div className="glass-panel overflow-hidden rounded-2xl">
-        <div className="border-b border-border p-6">
-          <h2 className="text-xl font-bold text-text">
-            {isUz ? 'Foydalanuvchilar' : 'Users'}
-          </h2>
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-t-2 border-primary"></div>
         </div>
-
-        {loading ? (
-          <div className="flex h-56 items-center justify-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-border bg-panel">
-                  <th className="p-4 font-medium text-muted">{isUz ? 'Ism' : 'Name'}</th>
-                  <th className="p-4 font-medium text-muted">Email</th>
-                  <th className="p-4 font-medium text-muted">{isUz ? 'Rol' : 'Role'}</th>
-                  <th className="p-4 font-medium text-muted">{isUz ? 'Ro\'yxatdan o\'tgan' : 'Registered'}</th>
+      ) : (
+        <div className="glass-panel border border-border/50 overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-surface/50 border-b border-border/50">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted">{isUz ? 'Nom' : 'Name'}</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted">{isUz ? 'Email' : 'Email'}</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted">{isUz ? 'Roll' : 'Role'}</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-muted">{isUz ? 'Amallar' : 'Actions'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user._id} className="border-b border-border/30 hover:bg-surface/30 transition-colors">
+                  <td className="px-6 py-4 text-text font-medium">{user.name}</td>
+                  <td className="px-6 py-4 text-text text-sm">{user.email}</td>
+                  <td className="px-6 py-4 text-text text-sm">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      user.role === 'admin' 
+                        ? 'bg-primary/20 text-primary' 
+                        : 'bg-blue-500/20 text-blue-400'
+                    }`}>
+                      {user.role === 'admin' ? (isUz ? 'Admin' : 'Admin') : (isUz ? 'Foydalanuvchi' : 'User')}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <select
+                      value={user.role}
+                      onChange={(e) => handleRoleChange(user, e.target.value as UserRole)}
+                      disabled={updatingUserId === user._id}
+                      className="px-3 py-1 bg-surface border border-border rounded-lg text-text text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="user">{isUz ? 'Foydalanuvchi' : 'User'}</option>
+                      <option value="admin">{isUz ? 'Admin' : 'Admin'}</option>
+                    </select>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {users.map((item) => (
-                  <tr key={item._id} className="border-b border-border transition-colors hover:bg-panelHover">
-                    <td className="p-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-sm font-bold text-primary">
-                          {item.name?.charAt(0).toUpperCase() || '?'}
-                        </div>
-                        <div>
-                          <p className="font-bold text-text">{item.name}</p>
-                          {item._id === user?._id && (
-                            <p className="text-xs text-muted">{isUz ? 'Siz' : 'You'}</p>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-text">{item.email}</td>
-                    <td className="p-4">
-                      <select
-                        value={item.role}
-                        disabled={updatingUserId === item._id}
-                        onChange={(event) => handleRoleChange(item, event.target.value as UserRole)}
-                        className="rounded-xl border border-border bg-panel px-3 py-2 text-sm font-medium text-text outline-none transition-colors focus:border-primary disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <option value="user">user</option>
-                        <option value="admin">admin</option>
-                      </select>
-                    </td>
-                    <td className="p-4 text-sm text-muted">
-                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

@@ -37,7 +37,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/register', {
+      const res = await fetch('https://crypto-app-mn9g.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
@@ -73,121 +73,108 @@ export default function Register() {
         <p className="mt-2 text-center text-sm text-muted">
           {language === 'uz' ? 'Yoki' : 'Or'}{' '}
           <Link href="/login" className="font-medium text-primary hover:text-blue-400 transition-colors">
-            {language === 'uz' ? 'mavjud hisobga kirish' : 'sign in to existing account'}
+            {language === 'uz' ? 'kirish' : 'sign in to your account'}
           </Link>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="glass-panel py-8 px-4 shadow sm:rounded-3xl sm:px-10 border border-border">
-
           {error && (
             <div className="mb-4 bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-xl flex items-center">
-              <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 mr-2" />
               <span className="text-sm font-medium">{error}</span>
             </div>
           )}
 
           {success && (
             <div className="mb-4 bg-success/10 border border-success/30 text-success px-4 py-3 rounded-xl flex items-center">
-              <CheckCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 mr-2" />
               <span className="text-sm font-medium">{success}</span>
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleRegister}>
+          <form className="space-y-6" onSubmit={handleRegister}>
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-muted">
-                {language === 'uz' ? 'To\'liq ism' : 'Full Name'}
+                {language === 'uz' ? 'Ism' : 'Full Name'}
               </label>
               <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-500" />
-                </div>
+                <User className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
                   id="name"
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder={language === 'uz' ? 'Ismingiz' : 'Your name'}
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-muted">
-                {language === 'uz' ? 'Email manzil' : 'Email address'}
+                {t('auth', 'email')}
               </label>
               <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-500" />
-                </div>
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
                   id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="you@example.com"
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="john@example.com"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-muted">
-                {language === 'uz' ? 'Parol' : 'Password'}
+                {t('auth', 'password')}
               </label>
               <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-500" />
-                </div>
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="••••••••"
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="••••••"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-muted">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-muted">
                 {language === 'uz' ? 'Parolni tasdiqlash' : 'Confirm Password'}
               </label>
               <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-500" />
-                </div>
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
-                  id="confirm-password"
+                  id="confirmPassword"
                   type="password"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="••••••••"
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="••••••"
                 />
               </div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary to-secondary hover:from-blue-600 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all group"
-              >
-                {loading
-                  ? (language === 'uz' ? 'Ro\'yxatdan o\'tilmoqda...' : 'Creating account...')
-                  : (language === 'uz' ? 'Ro\'yxatdan o\'tish' : 'Create Account')}
-                {!loading && <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary to-blue-600 hover:from-blue-500 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {loading ? (language === 'uz' ? 'Ro\'yxatdan o\'tilmoqda...' : 'Registering...') : (language === 'uz' ? 'Ro\'yxatdan o\'tish' : 'Sign up')}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </button>
           </form>
         </div>
       </div>

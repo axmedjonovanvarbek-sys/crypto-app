@@ -23,7 +23,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch('https://crypto-app-d4s5.onrender.com/api/auth/login', {
+      const res = await fetch('https://crypto-app-mn9g.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -81,20 +81,16 @@ export default function Login() {
               <label htmlFor="email" className="block text-sm font-medium text-muted">
                 {t('auth', 'email')}
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-500" />
-                </div>
+              <div className="mt-1 relative">
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
                   id="email"
-                  name="email"
                   type="email"
-                  autoComplete="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="you@example.com"
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="john@example.com"
                 />
               </div>
             </div>
@@ -103,20 +99,16 @@ export default function Login() {
               <label htmlFor="password" className="block text-sm font-medium text-muted">
                 {t('auth', 'password')}
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-500" />
-                </div>
+              <div className="mt-1 relative">
+                <Lock className="absolute left-3 top-3 w-5 h-5 text-muted" />
                 <input
                   id="password"
-                  name="password"
                   type="password"
-                  autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 bg-panel border border-border rounded-xl py-3 text-text placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  placeholder="••••••••"
+                  className="pl-10 w-full px-4 py-2 bg-surface border border-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-text placeholder-muted transition-colors"
+                  placeholder="••••••"
                 />
               </div>
             </div>
@@ -124,35 +116,30 @@ export default function Login() {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
-                  id="remember-me"
-                  name="remember-me"
+                  id="rememberMe"
+                  name="rememberMe"
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 text-primary focus:ring-primary border-gray-600 rounded bg-panel"
+                  className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-muted">
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-muted">
                   {t('auth', 'rememberMe')}
                 </label>
               </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-primary hover:text-blue-400 transition-colors">
-                  {t('auth', 'forgotPass')}
-                </a>
-              </div>
+              <Link href="#" className="text-sm font-medium text-primary hover:text-blue-400 transition-colors">
+                {t('auth', 'forgotPass')}
+              </Link>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary to-secondary hover:from-blue-600 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all group"
-              >
-                {loading ? t('auth', 'loggingIn') : t('auth', 'signInBtn')}
-                {!loading && <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary to-blue-600 hover:from-blue-500 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {loading ? t('auth', 'loggingIn') : t('auth', 'signInBtn')}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </button>
           </form>
         </div>
       </div>
