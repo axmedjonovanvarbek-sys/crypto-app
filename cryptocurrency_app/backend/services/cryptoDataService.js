@@ -18,7 +18,11 @@ const COINS = [
 const fetchCoinGecko = async () => {
   try {
     const ids = COINS.map(c => c.id).join(',');
-    const res = await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}`);
+    const res = await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
     const data = {};
     res.data.forEach(coin => {
       data[coin.id] = coin.current_price;
@@ -36,7 +40,12 @@ const fetchCoinCap = async () => {
     let coinCapData = null;
     
     try {
-      const res = await axios.get(`https://api.coincap.io/v2/assets?ids=${ids}`);
+      const res = await axios.get(`https://api.coincap.io/v2/assets?ids=${ids}`, {
+        timeout: 8000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      });
       const data = {};
       res.data.data.forEach(coin => {
         data[coin.id] = parseFloat(coin.priceUsd);
@@ -56,15 +65,27 @@ const fetchCoinCap = async () => {
 
 const fetchBinance = async () => {
   try {
-    const symbols = COINS.map(c => `"${c.symbol}"`).join(',');
-    const res = await axios.get(`https://api.binance.com/api/v3/ticker/price?symbols=[${symbols}]`);
-    const data = {};
-    res.data.forEach(coin => {
-      const matched = COINS.find(c => c.symbol === coin.symbol);
-      if (matched) {
-        data[matched.id] = parseFloat(coin.price);
+    const symbols = COINS.map(c => c.symbol);
+    // Binance API-ga to'g'ri formatda so'rov
+    const res = await axios.get(`https://api.binance.com/api/v3/ticker/price`, {
+      params: {
+        symbols: JSON.stringify(symbols)
+      },
+      timeout: 8000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       }
     });
+    
+    const data = {};
+    if (Array.isArray(res.data)) {
+      res.data.forEach(coin => {
+        const matched = COINS.find(c => c.symbol === coin.symbol);
+        if (matched) {
+          data[matched.id] = parseFloat(coin.price);
+        }
+      });
+    }
     return data;
   } catch (error) {
     console.error('Binance fetch error:', error.message);
@@ -146,7 +167,14 @@ const getCoinHistory = async (id, days = 7) => {
   activeRequests[cacheKey] = (async () => {
     try {
       const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${id}/market_chart`, {
-        params: { vs_currency: 'usd', days: days }
+        params: { 
+          vs_currency: 'usd', 
+          days: days 
+        },
+        timeout: 10000,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
       });
 
       historyCache.set(cacheKey, response.data);
@@ -179,12 +207,13 @@ const startCryptoPolling = (io) => {
     if (io) io.emit('cryptoUpdate', data);
   });
 
+  // 60 sekund o'rniga 120 sekunda ko'proq kutamiz, rate limiting kamaytirish uchun
   setInterval(async () => {
     const data = await fetchCryptoData();
     if (io && data.length > 0) {
       io.emit('cryptoUpdate', data);
     }
-  }, 60000);
+  }, 120000);
 };
 
 module.exports = {
